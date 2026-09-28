@@ -30,11 +30,11 @@
   <p class="lede">Agent Skills suites are groups of skills that work together, and each skill installs on its own. Every skill is a self-contained directory in the <a href="https://agentskills.io">Agent Skills</a> format. An installed skill never reads outside its own directory.</p>
 
   <h2 id="suites">Suites<a class="anchor" href="#suites" aria-label="Link to this section">#</a></h2>
-  <!-- To add a suite: add one <li> to this list, following the ops- entry. Nothing else on this page changes. -->
+  <!-- To add a suite: add one <li> to this list, following the ops- entry, with its plugin name (skill-suites-<suite>). Nothing else on this page changes. -->
   <ul class="suite-list">
     <li>
       <a class="suite-name" href="ops/"><code>ops-</code></a>
-      <p>Plans, orders, runs, and learns from multi-skill efforts across your installed skills.</p>
+      <p>Plans, orders, runs, and learns from multi-skill efforts across your installed skills. Plugin <code>skill-suites-ops</code>.</p>
       <span class="label">6 skills</span>
     </li>
   </ul>
@@ -44,7 +44,12 @@
   <pre><code class="language-sh">npx skills add shinytoyrobots/skill-suites --list</code></pre>
   <p>Install one skill by name. Repeat <code>--skill</code> to install several at once:</p>
   <pre><code class="language-sh">npx skills add shinytoyrobots/skill-suites --skill &lt;name&gt;</code></pre>
-  <p>Each suite page lists the full install command for that suite.</p>
+  <p>Or install a whole suite as a plugin. Each suite is its own plugin, named <code>skill-suites-&lt;suite&gt;</code>. In Claude Code:</p>
+  <pre><code class="language-sh">claude plugin marketplace add shinytoyrobots/skill-suites
+claude plugin install skill-suites-&lt;suite&gt;@skill-suites</code></pre>
+  <p>In Grok:</p>
+  <pre><code class="language-sh">grok plugin install shinytoyrobots/skill-suites#skills/&lt;suite&gt;</code></pre>
+  <p>Each suite page lists the full install commands for that suite.</p>
 
   <h2 id="source">Source and license<a class="anchor" href="#source" aria-label="Link to this section">#</a></h2>
   <ul>

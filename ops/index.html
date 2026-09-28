@@ -74,7 +74,7 @@
 
     <h1>ops- reference</h1>
 
-    <p class="lede">The <code>ops-</code> suite works out which of your installed skills fit a problem that needs more than one skill, and in what order. It writes that order up as the full written plan the run executes (the OPORD). It then runs the plan, or monitors you running it. Sequences that keep succeeding go into the library of plans that worked before (the opening book). The methods are adapted from military planning; the rationale is in the README section <a href="https://github.com/shinytoyrobots/skill-suites#why-military-planning">Why military planning</a>.</p>
+    <p class="lede">The <code>ops-</code> suite works out which of your installed skills fit a problem that needs more than one skill, and in what order. It writes that order up as the full written plan the run executes (the OPORD). It then runs the plan, or monitors you running it. Sequences that keep succeeding go into the library of plans that worked before (the opening book). The methods are adapted from military planning; the rationale is in the suite README section <a href="https://github.com/shinytoyrobots/skill-suites/blob/main/skills/ops/README.md#why-military-planning">Why military planning</a>.</p>
 
     <pre class="pipeline" role="img" aria-label="Pipeline: ops-recon, then ops-plan, then ops-order, then either ops-run or ops-assess, then ops-learn."><code>ops-recon -&gt; ops-plan -&gt; ops-order -+-&gt; ops-run ----+-&gt; ops-learn
                                     +-&gt; ops-assess -+</code></pre>
@@ -110,12 +110,18 @@
     <!-- ============================================================ -->
     <section aria-labelledby="install">
       <h2 id="install">Install<a class="anchor" href="#install" aria-label="Link to this section">#</a></h2>
-      <p>Install all six skills:</p>
+      <p>Install all six skills as the plugin <code>skill-suites-ops</code>, in Claude Code:</p>
+      <pre><code class="language-sh">claude plugin marketplace add shinytoyrobots/skill-suites
+claude plugin install skill-suites-ops@skill-suites</code></pre>
+      <p>Or in Grok:</p>
+      <pre><code class="language-sh">grok plugin install shinytoyrobots/skill-suites#skills/ops</code></pre>
+      <p>Or install them as individual skills, with any Agent Skills host:</p>
       <pre><code class="language-sh">npx skills add shinytoyrobots/skill-suites --skill ops-recon --skill ops-plan --skill ops-order \
   --skill ops-run --skill ops-assess --skill ops-learn</code></pre>
       <p>List what is available, then install any subset:</p>
       <pre><code class="language-sh">npx skills add shinytoyrobots/skill-suites --list</code></pre>
       <p><code>ops-plan</code> is useful on its own. The other skills take its output as their input.</p>
+      <p>The skills make no network calls and send nothing to another service. They write only to the <a href="#run-directory">run directory</a> in your project and the <a href="#durable-state">durable-state directory</a> in your home directory.</p>
     </section>
 
     <!-- ============================================================ -->

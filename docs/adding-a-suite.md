@@ -35,6 +35,6 @@ When a suite is ported from a private or internal source, `_shared/DERIVATION.md
 
 1. `skills-ref validate` passes on every skill directory.
 2. `npx skills add <this repo> --list` shows every skill and does not show `_shared`.
-3. A repository search finds none of the source's private paths, names, or prefixes.
+3. A repository search finds none of the source's private paths, names, or prefixes. A standard install location that any user of a host has (such as `~/.claude/commands`) is not private, and may appear where a skill scans for installed skills — as in `ops-recon`'s scan-root table. Anywhere else, treat it as a leak: a skill that reads or writes there is binding to one person's setup.
 4. After installing one skill alone into an empty project, every link in its `SKILL.md` resolves inside the installed directory.
 5. `scripts/vendor-references.sh` run twice produces no diff.

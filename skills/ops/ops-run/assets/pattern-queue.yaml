@@ -1,0 +1,7 @@
+# pattern-queue.yaml — candidate opening-book entries waiting on review.
+# ops-run and ops-assess append an entry after each completed execution;
+# ops-learn promotes recurring patterns and trims the queue.
+# Schema: ops-doctrine.md (in any ops- skill's references/), "Pattern Queue Entry".
+schema-version: "1.0"
+
+queue: []

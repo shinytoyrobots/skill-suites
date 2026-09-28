@@ -1,0 +1,9 @@
+# opening-book.yaml — the library of structural patterns that worked before.
+# Stores capability-class sequences, not skill names, so entries survive
+# changes to which skills are installed. ops-learn promotes entries here
+# from pattern-queue.yaml. Schema: ops-doctrine.md (in any ops- skill's references/), "Opening Book Schema".
+schema-version: "1.0"
+
+patterns: []
+
+failure-patterns: []

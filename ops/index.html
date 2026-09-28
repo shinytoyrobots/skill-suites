@@ -1,0 +1,722 @@
+<!doctype html>
+<!--
+  Adding a suite page:
+  1. Copy this file to <suite>/index.html (for example cap/index.html).
+  2. Keep the structure: breadcrumb, h1, overview, the TOC (both copies: .toc-inline and .toc-side),
+     one <section> per h2 with an id, and one <article class="skill"> per skill using the same
+     <dl class="entry"> rows in the same order.
+  3. Add one <li> to the suite list in ../index.html.
+  Links stay relative; styles come from ../assets/site.css.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ops- reference · skill-suites</title>
+<meta name="description" content="Reference for the ops- Agent Skills suite: six skills that plan, order, run, and learn from multi-skill efforts across your installed skills.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="../">skill-suites</a>
+    <nav aria-label="Site">
+      <ul>
+        <li><a href="../#suites">Suites</a></li>
+        <li><a href="https://github.com/shinytoyrobots/skill-suites">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="page-wide">
+
+  <aside class="toc-side" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <nav class="toc">
+      <ol>
+        <li><a href="#install">Install</a></li>
+        <li><a href="#skills">Skills</a>
+          <ol>
+            <li><a href="#ops-recon">ops-recon</a></li>
+            <li><a href="#ops-plan">ops-plan</a></li>
+            <li><a href="#ops-order">ops-order</a></li>
+            <li><a href="#ops-run">ops-run</a></li>
+            <li><a href="#ops-assess">ops-assess</a></li>
+            <li><a href="#ops-learn">ops-learn</a></li>
+          </ol>
+        </li>
+        <li><a href="#run-directory">Run directory</a></li>
+        <li><a href="#durable-state">Durable state</a></li>
+        <li><a href="#checkpoint-levels">Checkpoint levels (HITL)</a></li>
+        <li><a href="#adaptation-rules">Adaptation rules</a></li>
+        <li><a href="#opening-book">Opening book</a></li>
+        <li><a href="#capability-classes">Capability classes</a></li>
+        <li><a href="#tiers">Tiers</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main id="main" class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../#suites">Suites</a></li>
+        <li aria-current="page">ops</li>
+      </ol>
+    </nav>
+
+    <h1>ops- reference</h1>
+
+    <p class="lede">The <code>ops-</code> suite works out which of your installed skills fit a problem that needs more than one skill, and in what order. It writes that order up as the full written plan the run executes (the OPORD). It then runs the plan, or monitors you running it. Sequences that keep succeeding go into the library of plans that worked before (the opening book). The methods are adapted from military planning; the rationale is in the README section <a href="https://github.com/shinytoyrobots/skill-suites#why-military-planning">Why military planning</a>.</p>
+
+    <pre class="pipeline" role="img" aria-label="Pipeline: ops-recon, then ops-plan, then ops-order, then either ops-run or ops-assess, then ops-learn."><code>ops-recon -&gt; ops-plan -&gt; ops-order -+-&gt; ops-run ----+-&gt; ops-learn
+                                    +-&gt; ops-assess -+</code></pre>
+    <p class="pipeline-caption"><code>ops-assess</code> takes the place of <code>ops-run</code> when you run the plan's skills by hand. <code>ops-learn</code> follows either one.</p>
+
+    <details class="toc-inline">
+      <summary>On this page</summary>
+      <nav class="toc" aria-label="On this page">
+        <ol>
+          <li><a href="#install">Install</a></li>
+          <li><a href="#skills">Skills</a>
+            <ol>
+              <li><a href="#ops-recon">ops-recon</a></li>
+              <li><a href="#ops-plan">ops-plan</a></li>
+              <li><a href="#ops-order">ops-order</a></li>
+              <li><a href="#ops-run">ops-run</a></li>
+              <li><a href="#ops-assess">ops-assess</a></li>
+              <li><a href="#ops-learn">ops-learn</a></li>
+            </ol>
+          </li>
+          <li><a href="#run-directory">Run directory</a></li>
+          <li><a href="#durable-state">Durable state</a></li>
+          <li><a href="#checkpoint-levels">Checkpoint levels (HITL)</a></li>
+          <li><a href="#adaptation-rules">Adaptation rules</a></li>
+          <li><a href="#opening-book">Opening book</a></li>
+          <li><a href="#capability-classes">Capability classes</a></li>
+          <li><a href="#tiers">Tiers</a></li>
+          <li><a href="#glossary">Glossary</a></li>
+        </ol>
+      </nav>
+    </details>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="install">
+      <h2 id="install">Install<a class="anchor" href="#install" aria-label="Link to this section">#</a></h2>
+      <p>Install all six skills:</p>
+      <pre><code class="language-sh">npx skills add shinytoyrobots/skill-suites --skill ops-recon --skill ops-plan --skill ops-order \
+  --skill ops-run --skill ops-assess --skill ops-learn</code></pre>
+      <p>List what is available, then install any subset:</p>
+      <pre><code class="language-sh">npx skills add shinytoyrobots/skill-suites --list</code></pre>
+      <p><code>ops-plan</code> is useful on its own. The other skills take its output as their input.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="skills">
+      <h2 id="skills">Skills<a class="anchor" href="#skills" aria-label="Link to this section">#</a></h2>
+      <p>Every entry uses the same rows. All six skills declare the capability class <code>meta-orchestration</code>.</p>
+
+      <!-- ops-recon -->
+      <article class="skill" aria-labelledby="ops-recon">
+        <h3 id="ops-recon">ops-recon<a class="anchor" href="#ops-recon" aria-label="Link to this section">#</a></h3>
+        <div class="labels"><span class="label label-accent">Tier III</span><span class="label">Never stops</span></div>
+        <dl class="entry">
+          <dt>Purpose</dt>
+          <dd>Builds an inventory of installed skills (the force roster). It sorts them by what kind of work each skill does (its capability-class) and how heavy a lift each skill is (its tier).</dd>
+
+          <dt>Use when</dt>
+          <dd>You ask what skills you have, or want your skill library inventoried or mapped. Also before planning with <code>ops-plan</code> when no fresh inventory (force roster) exists.</dd>
+
+          <dt>Not for</dt>
+          <dd>Questions about how a single skill works, or about the agent host's own features.</dd>
+
+          <dt>Arguments</dt>
+          <dd>
+            <ul>
+              <li><em>none</em>: scan the default roots.</li>
+              <li><em>a path</em>: scan only that directory (every <code>SKILL.md</code> beneath it). This replaces all default roots, including command files. Skills found get <code>scope: path</code>.</li>
+              <li><code>manual</code>: you supply the list. It asks for each skill's name, description, and optionally what kind of work it does (its capability-class).</li>
+              <li><code>--out &lt;dir&gt;</code>: write the roster into that run directory. <code>ops-plan</code> passes this.</li>
+            </ul>
+          </dd>
+
+          <dt>Reads</dt>
+          <dd>
+            <p>The frontmatter of each skill (<code>name</code>, <code>description</code>, <code>compatibility</code>, <code>metadata</code>) under these roots. It follows symlinks.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th scope="col">Scope</th><th scope="col">Roots</th></tr></thead>
+                <tbody>
+                  <tr><td>project</td><td><code>./.agents/skills</code>, <code>./.claude/skills</code>, <code>./.grok/skills</code>, <code>./.codex/skills</code></td></tr>
+                  <tr><td>user</td><td><code>~/.agents/skills</code>, <code>~/.claude/skills</code>, <code>~/.grok/skills</code>, <code>~/.codex/skills</code></td></tr>
+                  <tr><td>command files</td><td><code>~/.claude/commands/*.md</code> (top level only)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Duplicates are merged by <code>name</code>. The project copy wins over the user copy; other locations are listed under <code>also-at</code>. A missing root is skipped.</p>
+          </dd>
+
+          <dt>Writes</dt>
+          <dd>
+            <p><code>force-roster.yaml</code>, to the first of:</p>
+            <ul>
+              <li>the <code>--out</code> directory;</li>
+              <li>the latest effort directory, if it holds a <code>force-roster.yaml</code> but no <code>situation-assessment.yaml</code> (an unclaimed recon), overwriting that roster;</li>
+              <li>a new <code>./.ops/{YYYY-MM-DD}-recon/</code>.</li>
+            </ul>
+          </dd>
+
+          <dt>Stops for your decision</dt>
+          <dd>Never. In <code>manual</code> mode it asks you for the skill list.</dd>
+
+          <dt>Requires</dt>
+          <dd>Nothing beyond a host that loads Agent Skills.</dd>
+
+          <dt>Tier</dt>
+          <dd>III</dd>
+
+          <dt>Typically next</dt>
+          <dd><a href="#ops-plan"><code>ops-plan</code></a></dd>
+        </dl>
+      </article>
+
+      <!-- ops-plan -->
+      <article class="skill" aria-labelledby="ops-plan">
+        <h3 id="ops-plan">ops-plan<a class="anchor" href="#ops-plan" aria-label="Link to this section">#</a></h3>
+        <div class="labels"><span class="label label-accent">Tier I</span><span class="label">Stops for you</span></div>
+        <dl class="entry">
+          <dt>Purpose</dt>
+          <dd>Runs a structured situation check (METT-TC) on a problem. Recommends which installed skills to run, in what order, as a candidate plan (a COA).</dd>
+
+          <dt>Use when</dt>
+          <dd>You ask which skills to use for a goal, or want a multi-step effort planned or its options compared before running anything. Also when you say "plan this" about work your skill library could do.</dd>
+
+          <dt>Not for</dt>
+          <dd>General project planning, roadmaps, or questions about military doctrine itself.</dd>
+
+          <dt>Arguments</dt>
+          <dd>
+            <ul>
+              <li><em>a problem statement</em> (required).</li>
+              <li><code>urgency: immediate | routine | deliberate</code> (optional). When absent, it is inferred: "now", "quick", "urgent", "ASAP" mean immediate. "Strategic", "evaluate options", "high-stakes", "important decision" mean deliberate. Anything else is routine.</li>
+            </ul>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th scope="col">Urgency</th><th scope="col">Planning budget</th><th scope="col">What runs</th></tr></thead>
+                <tbody>
+                  <tr><td><code>immediate</code></td><td>under 5% of context</td><td>No full situation check (METT-TC). Uses a matched chain from the library of plans that worked before (the opening book), else 1–3 roster skills. No stress-testing the plan before running it (wargaming), backup skills, or adaptation rules.</td></tr>
+                  <tr><td><code>routine</code></td><td>about 15%</td><td>Full situation check (METT-TC), one candidate plan (a COA), pre-execution gates, and assuming the plan failed and working out why (a pre-mortem).</td></tr>
+                  <tr><td><code>deliberate</code></td><td>about 25%</td><td>Full situation check (METT-TC), two or three candidate plans (COAs), full stress-testing (wargaming), your review.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </dd>
+
+          <dt>Reads</dt>
+          <dd>
+            <ul>
+              <li><code>opening-book.yaml</code>: the library of plans that worked before (the opening book), including its known-bad sequences (failure patterns). A missing file is treated as empty.</li>
+              <li><code>force-roster.yaml</code>: claims an unclaimed recon directory if one is latest. Otherwise copies an inventory (force roster) under 30 minutes old from the latest effort, or runs <code>ops-recon</code> with <code>--out</code>.</li>
+            </ul>
+            <p>The <code>meta-orchestration</code> class is excluded, so a plan never schedules an <code>ops-</code> skill.</p>
+          </dd>
+
+          <dt>Writes</dt>
+          <dd>
+            <p>Into a new run directory <code>./.ops/{YYYY-MM-DD}-{topic-slug}/</code>, or a claimed recon directory renamed to that form:</p>
+            <ul>
+              <li><code>situation-assessment.yaml</code>: all six blocks of the structured situation check (METT-TC).</li>
+              <li><code>coa-recommended.md</code>: the recommended candidate plan (a COA), with its skill sequence, backup skills, adaptation rules, risk assessment, and notes from stress-testing the plan before running it (wargaming notes).</li>
+            </ul>
+          </dd>
+
+          <dt>Stops for your decision</dt>
+          <dd>
+            <ul>
+              <li>When an earlier plan matches closely enough to reuse (confidence above 0.85): reuse it and skip the full situation check (METT-TC), or analyze from scratch.</li>
+              <li>At <code>deliberate</code> urgency: one decision on the comparison of candidate plans (COAs) and the recommendation, before anything is written.</li>
+            </ul>
+          </dd>
+
+          <dt>Requires</dt>
+          <dd>Nothing beyond a host that loads Agent Skills. With no inventory (force roster) and a failed <code>ops-recon</code>, it plans in degraded mode and says so.</dd>
+
+          <dt>Tier</dt>
+          <dd>I</dd>
+
+          <dt>Typically next</dt>
+          <dd><a href="#ops-order"><code>ops-order</code></a>, or run the skills by hand in the order shown.</dd>
+        </dl>
+      </article>
+
+      <!-- ops-order -->
+      <article class="skill" aria-labelledby="ops-order">
+        <h3 id="ops-order">ops-order<a class="anchor" href="#ops-order" aria-label="Link to this section">#</a></h3>
+        <div class="labels"><span class="label label-accent">Tier I</span><span class="label">Never stops</span></div>
+        <dl class="entry">
+          <dt>Purpose</dt>
+          <dd>Turns the recommended candidate plan (the COA) into the full written plan the run executes (the OPORD). It has five paragraphs: Situation, Mission, Execution, Sustainment, and Command and Signal. It adds per-skill tasking, backup skills, and pre-committed adaptation rules.</dd>
+
+          <dt>Use when</dt>
+          <dd>You have a plan from <code>ops-plan</code> and want it made executable, or ask for the full written plan the run executes (an OPORD). Also when you want tasking and contingencies written before running a multi-skill effort.</dd>
+
+          <dt>Not for</dt>
+          <dd>General task lists, project plans, or tickets.</dd>
+
+          <dt>Arguments</dt>
+          <dd>
+            <ul>
+              <li><em>none</em>: use the latest effort directory's <code>coa-recommended.md</code>.</li>
+              <li><em>a path</em>: a <code>coa-recommended.md</code> file, or a run directory containing one.</li>
+            </ul>
+          </dd>
+
+          <dt>Reads</dt>
+          <dd>
+            <ul>
+              <li><code>coa-recommended.md</code> (required). If none is found it prints "No recommended plan found. Run ops-plan first." and stops.</li>
+              <li><code>situation-assessment.yaml</code> (optional). If missing, the Situation paragraph is derived from the recommended plan alone, with a note saying so.</li>
+              <li><code>force-roster.yaml</code> in the same directory, for tiers the assessment lacks.</li>
+            </ul>
+          </dd>
+
+          <dt>Writes</dt>
+          <dd><code>opord.md</code>, in the same run directory as the recommended plan. If that plan came from outside <code>./.ops/</code>, it creates a new run directory and notes the source.</dd>
+
+          <dt>Stops for your decision</dt>
+          <dd>Never. It sets the points where the run stops for your decision (HITL checkpoints) that <code>ops-run</code> later acts on.</dd>
+
+          <dt>Requires</dt>
+          <dd>Nothing beyond a host that loads Agent Skills.</dd>
+
+          <dt>Tier</dt>
+          <dd>I</dd>
+
+          <dt>Typically next</dt>
+          <dd><a href="#ops-run"><code>ops-run</code></a>, or run the tasking table by hand and monitor with <a href="#ops-assess"><code>ops-assess</code></a>.</dd>
+        </dl>
+      </article>
+
+      <!-- ops-run -->
+      <article class="skill" aria-labelledby="ops-run">
+        <h3 id="ops-run">ops-run<a class="anchor" href="#ops-run" aria-label="Link to this section">#</a></h3>
+        <div class="labels"><span class="label label-accent">Tier I</span><span class="label">Stops for you</span><span class="label">Needs subagents</span></div>
+        <dl class="entry">
+          <dt>Purpose</dt>
+          <dd>Executes the full written plan (the OPORD) phase by phase, launching each skill as its own subagent. It applies the plan's adaptation rules and stops at your checkpoints. Its state file lets a run pause for days and resume.</dd>
+
+          <dt>Use when</dt>
+          <dd>You want the full written plan the run executes (an OPORD) carried out, ask to run or resume the plan, or want to start from a given phase.</dd>
+
+          <dt>Not for</dt>
+          <dd>Producing the plan (<code>ops-plan</code>, <code>ops-order</code>), monitoring skills you run by hand (<code>ops-assess</code>), or running a single skill directly.</dd>
+
+          <dt>Arguments</dt>
+          <dd>
+            <ul>
+              <li><em>none</em>: offer to resume an execution in the latest effort whose status is <code>in-progress</code>, <code>escalated</code>, or <code>paused</code>. Otherwise start that directory's <code>opord.md</code>.</li>
+              <li><em>a path</em>: an <code>opord.md</code>, or a run directory containing one.</li>
+              <li><code>--phase N</code>: start or resume at phase N.</li>
+              <li><code>--dry-run</code>: parse and display what would run. Launches nothing and writes no state.</li>
+            </ul>
+          </dd>
+
+          <dt>Reads</dt>
+          <dd>
+            <ul>
+              <li><code>opord.md</code> (required). If none is found it prints "No OPORD found. Run ops-order first." and stops.</li>
+              <li><code>situation-assessment.yaml</code> and <code>coa-recommended.md</code>, when present.</li>
+              <li><code>execution-state.yaml</code>, on resume.</li>
+              <li><code>force-roster.yaml</code>, refreshed with the <code>ops-recon</code> scan before validation.</li>
+            </ul>
+          </dd>
+
+          <dt>Writes</dt>
+          <dd>
+            <ul>
+              <li><code>execution-state.yaml</code>, after every change.</li>
+              <li><code>force-roster.yaml</code>, refreshed in the run directory.</li>
+              <li><code>execution-report.md</code>, on completion or abort.</li>
+              <li>One entry appended to <code>pattern-queue.yaml</code> in the durable-state directory. An aborted run is recorded with <code>output-quality: low</code>.</li>
+            </ul>
+          </dd>
+
+          <dt>Stops for your decision</dt>
+          <dd>
+            <ul>
+              <li>After each step the plan flags <code>hitl: true</code>: approve, approve with conditions, or reject. Reject pauses the run.</li>
+              <li>When the plan's frame no longer holds at a phase boundary (an anti-fixation check): continue as planned, or pause and re-run <code>ops-plan</code>.</li>
+              <li>When a condition that stops and asks you instead of guessing (an escalate trigger) matches.</li>
+              <li>When the backup skill also fails (N-2), at every checkpoint level.</li>
+              <li>When it finds resumable state: resume, restart the current phase, or abort.</li>
+            </ul>
+            <p>It also halts, without a choice, on a failed validation or a failed phase transition criterion.</p>
+          </dd>
+
+          <dt>Requires</dt>
+          <dd>A host that can launch subagents and pause mid-run for a person's decision. Without both, use <a href="#ops-assess"><code>ops-assess</code></a> to monitor a hand-run plan.</dd>
+
+          <dt>Tier</dt>
+          <dd>I</dd>
+
+          <dt>Typically next</dt>
+          <dd><a href="#ops-learn"><code>ops-learn</code></a></dd>
+        </dl>
+      </article>
+
+      <!-- ops-assess -->
+      <article class="skill" aria-labelledby="ops-assess">
+        <h3 id="ops-assess">ops-assess<a class="anchor" href="#ops-assess" aria-label="Link to this section">#</a></h3>
+        <div class="labels"><span class="label label-accent">Tier II</span><span class="label">Stops for you</span></div>
+        <dl class="entry">
+          <dt>Purpose</dt>
+          <dd>Monitors a full written plan (an OPORD) that you run by hand. It runs the observe–orient–decide–act loop (OODA) on each step's output. It applies the plan's adaptation rules and backup skills, and writes the execution report.</dd>
+
+          <dt>Use when</dt>
+          <dd>You are running the skills in a full written plan (an OPORD) yourself and want each step checked. Also when you ask to assess or monitor execution, or want a partly-run plan evaluated.</dd>
+
+          <dt>Not for</dt>
+          <dd>Code review, QA, general assessments, or automated execution (<code>ops-run</code>).</dd>
+
+          <dt>Arguments</dt>
+          <dd>
+            <ul>
+              <li><em>none</em>: the latest effort directory's <code>opord.md</code>.</li>
+              <li><em>a path</em>: an <code>opord.md</code>, or a run directory containing one.</li>
+            </ul>
+          </dd>
+
+          <dt>Reads</dt>
+          <dd>
+            <ul>
+              <li><code>opord.md</code> (required). If none is found it prints "No OPORD found. Run ops-order first." and stops.</li>
+              <li><code>execution-state.yaml</code>, when present, since <code>ops-run</code> may have executed some phases.</li>
+              <li>Each step's output file, at the path in the plan's tasking table.</li>
+            </ul>
+          </dd>
+
+          <dt>Writes</dt>
+          <dd>
+            <ul>
+              <li><code>execution-report.md</code>. If <code>ops-run</code> already wrote one, it updates that report.</li>
+              <li>One entry appended to <code>pattern-queue.yaml</code>, on a complete run only. It skips this when <code>ops-run</code> already reported the same run.</li>
+            </ul>
+          </dd>
+
+          <dt>Stops for your decision</dt>
+          <dd>
+            <ul>
+              <li>When a step has no output yet: check again, skip, or run it now.</li>
+              <li>When a step escalates: continue anyway, re-run this step, abort and re-plan, or give guidance. The question names the trigger that matched, if any.</li>
+              <li>When the backup skill also fails (N-2), at every checkpoint level.</li>
+              <li>When the plan's frame no longer holds at a phase boundary (an anti-fixation check): continue, re-run <code>ops-plan</code> with a new problem statement, or adjust the remaining steps.</li>
+            </ul>
+            <p>A fix it applies on its own without asking (an auto-adapt rule) never interrupts you.</p>
+          </dd>
+
+          <dt>Requires</dt>
+          <dd>Nothing beyond a host that loads Agent Skills. You run the plan's skills yourself.</dd>
+
+          <dt>Tier</dt>
+          <dd>II</dd>
+
+          <dt>Typically next</dt>
+          <dd><a href="#ops-learn"><code>ops-learn</code></a>, or <code>ops-assess</code> again to pick up where a partial run stopped.</dd>
+        </dl>
+      </article>
+
+      <!-- ops-learn -->
+      <article class="skill" aria-labelledby="ops-learn">
+        <h3 id="ops-learn">ops-learn<a class="anchor" href="#ops-learn" aria-label="Link to this section">#</a></h3>
+        <div class="labels"><span class="label label-accent">Tier IV</span><span class="label">Never stops</span></div>
+        <dl class="entry">
+          <dt>Purpose</dt>
+          <dd>Promotes recurring successful sequences from the candidate new entries waiting on review (the pattern queue) into the library of plans that worked before (the opening book). It records known-bad sequences (failure patterns). It lowers confidence on unused plans: an old plan gets checked harder the longer it has sat unused (confidence decay).</dd>
+
+          <dt>Use when</dt>
+          <dd>You ask to update or review the library of plans that worked before (the opening book), or to promote learned patterns. Also after several <code>ops-run</code> or <code>ops-assess</code> executions, to close the learning loop.</dd>
+
+          <dt>Not for</dt>
+          <dd>Model training, or general "what did we learn" retrospectives.</dd>
+
+          <dt>Arguments</dt>
+          <dd>None.</dd>
+
+          <dt>Reads</dt>
+          <dd><code>pattern-queue.yaml</code> and <code>opening-book.yaml</code> in the durable-state directory. A missing file is first created from the empty template in the skill's own <code>assets/</code>.</dd>
+
+          <dt>Writes</dt>
+          <dd>
+            <ul>
+              <li><code>opening-book.yaml</code>: new and reinforced plans, known-bad sequences (failure patterns), and decayed confidence.</li>
+              <li><code>pattern-queue.yaml</code>: trimmed of entries that contributed to a promotion or a failure capture. The rest stay to keep accumulating.</li>
+            </ul>
+            <p>Unknown keys and comments in hand-edited files are preserved.</p>
+          </dd>
+
+          <dt>Stops for your decision</dt>
+          <dd>Never.</dd>
+
+          <dt>Requires</dt>
+          <dd>Nothing beyond a host that loads Agent Skills.</dd>
+
+          <dt>Tier</dt>
+          <dd>IV</dd>
+
+          <dt>Typically next</dt>
+          <dd><a href="#ops-plan"><code>ops-plan</code></a> on a new problem, or <a href="#ops-recon"><code>ops-recon</code></a> if your skills have changed.</dd>
+        </dl>
+      </article>
+    </section>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="run-directory">
+      <h2 id="run-directory">Run directory<a class="anchor" href="#run-directory" aria-label="Link to this section">#</a></h2>
+      <p>Each effort gets one directory in your project:</p>
+      <pre><code class="language-text">./.ops/{YYYY-MM-DD}-{topic-slug}/</code></pre>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">File</th><th scope="col">Written by</th><th scope="col">Contents</th></tr></thead>
+          <tbody>
+            <tr><td><code>force-roster.yaml</code></td><td><code>ops-recon</code></td><td>The inventory of installed skills (the force roster), by kind of work (capability class)</td></tr>
+            <tr><td><code>situation-assessment.yaml</code></td><td><code>ops-plan</code></td><td>The six blocks of the structured situation check (METT-TC)</td></tr>
+            <tr><td><code>coa-recommended.md</code></td><td><code>ops-plan</code></td><td>The recommended candidate plan (a COA)</td></tr>
+            <tr><td><code>opord.md</code></td><td><code>ops-order</code></td><td>The full written plan the run executes (the OPORD)</td></tr>
+            <tr><td><code>execution-state.yaml</code></td><td><code>ops-run</code></td><td>Resumable execution state</td></tr>
+            <tr><td><code>execution-report.md</code></td><td><code>ops-run</code> or <code>ops-assess</code></td><td>Execution log and quality assessment</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The <strong>latest effort</strong> is the run directory whose newest file is most recent. Skills with no path argument use it. A path argument always overrides it.</p>
+      <p>Output from the skills a plan runs goes to the path in its tasking table. A bare filename goes into the run directory. A skill with no file convention writes <code>step-{phase}-{skill}.md</code> there.</p>
+      <p>To keep efforts out of version control, add <code>.ops/</code> to <code>.gitignore</code>.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="durable-state">
+      <h2 id="durable-state">Durable state<a class="anchor" href="#durable-state" aria-label="Link to this section">#</a></h2>
+      <p>Two files live outside any project and are shared across all of them:</p>
+      <pre><code class="language-text">~/.ops-skills/opening-book.yaml
+~/.ops-skills/pattern-queue.yaml</code></pre>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">File</th><th scope="col">Written by</th><th scope="col">Read by</th></tr></thead>
+          <tbody>
+            <tr><td><code>opening-book.yaml</code></td><td><code>ops-learn</code></td><td><code>ops-plan</code>, <code>ops-learn</code></td></tr>
+            <tr><td><code>pattern-queue.yaml</code></td><td><code>ops-run</code>, <code>ops-assess</code>, <code>ops-learn</code></td><td><code>ops-learn</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>When the <code>OPS_STATE</code> environment variable is set, it replaces <code>~/.ops-skills/</code> as the directory.</li>
+        <li>A skill that writes a missing file first copies the empty template from its own <code>assets/</code> directory.</li>
+        <li>A skill that only reads a missing file treats it as empty.</li>
+      </ul>
+    </section>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="checkpoint-levels">
+      <h2 id="checkpoint-levels">Checkpoint levels (HITL)<a class="anchor" href="#checkpoint-levels" aria-label="Link to this section">#</a></h2>
+      <p><code>hitl-level</code> sets how often a run has a point where it stops for your decision (a HITL checkpoint). <code>ops-plan</code> sets 2 unless you state a preference. <code>ops-order</code> turns the level into per-step <code>hitl</code> flags; <code>ops-run</code> acts only on those flags.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Level</th><th scope="col">Stops at</th></tr></thead>
+          <tbody>
+            <tr><td><strong>0</strong></td><td>Nothing planned. Only a condition that stops and asks you instead of guessing (an escalate trigger) or a failed backup skill (an N-2 fallback) stops the run.</td></tr>
+            <tr><td><strong>1</strong></td><td>Before any terminal deliverable leaves the run directory (published, sent, merged)</td></tr>
+            <tr><td><strong>2</strong> <span class="label">Default</span></td><td>Level 1, plus after every step heavy enough to be tier I or II</td></tr>
+            <tr><td><strong>3</strong></td><td>After every step</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A condition that stops and asks you instead of guessing (an escalate trigger) stops the run at every level. So does a failed backup skill (an N-2 fallback).</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="adaptation-rules">
+      <h2 id="adaptation-rules">Adaptation rules<a class="anchor" href="#adaptation-rules" aria-label="Link to this section">#</a></h2>
+      <p><code>ops-order</code> writes these rules into the plan before it runs. <code>ops-run</code> and <code>ops-assess</code> apply them.</p>
+
+      <h3 id="backup-skills">Backup skills<a class="anchor" href="#backup-skills" aria-label="Link to this section">#</a></h3>
+      <p>Every step heavy enough to be tier I or II needs the backup skill to use if the first one fails (an N-1 contingency). It is optional for lighter steps the plan depends on.</p>
+      <pre><code class="language-yaml">n-1-contingencies:
+  - skill: "skill-name"
+    trigger: "skill unavailable OR output empty after 2 retries"
+    substitute-chain: ["alt-skill-1", "alt-skill-2"]
+    execution-mode: parallel | sequential
+    tradeoff: "description of capability loss"
+    n-2-fallback: escalate-to-hitl</code></pre>
+      <p>When nothing installed can stand in, the entry records <code>substitute-chain: []</code>. That step escalates as soon as it fails.</p>
+
+      <h3 id="rule-types">Rule types<a class="anchor" href="#rule-types" aria-label="Link to this section">#</a></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Key</th><th scope="col">What it is</th><th scope="col">On match</th></tr></thead>
+          <tbody>
+            <tr><td><code>auto-adapt-rules</code></td><td>A fix it applies on its own without asking (an auto-adapt rule), for predictable failures</td><td>Runs the response, records it, and continues</td></tr>
+            <tr><td><code>escalate-triggers</code></td><td>A condition that stops and asks you instead of guessing (an escalate trigger), for frame-breaking deviations</td><td>Runs any automatic actions, then stops for your decision</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre><code class="language-yaml">auto-adapt-rules:
+  - trigger: "empty output"        # string/pattern match against observed output
+    response: "retry with simplified query"
+escalate-triggers:
+  - trigger: "problem reframed"    # condition description
+    response: "surface to the operator — re-run ops-plan"</code></pre>
+      <p>Each plan needs at least one of each. Escalation order: a fix it applies on its own without asking (an auto-adapt rule) fires silently. A condition that stops and asks you instead of guessing (an escalate trigger) pauses the run. A failed backup skill (N-2) always stops the run, whatever the checkpoint level.</p>
+
+      <h3 id="match-mechanism">Match mechanism<a class="anchor" href="#match-mechanism" aria-label="Link to this section">#</a></h3>
+      <p>Both rule types match by text pattern, never by judgment. The check is mechanical: a substring or pattern present or absent, a pattern count against a threshold, or a file present or absent. The doctrine gives the reason:</p>
+      <blockquote><p>"A rule that fires on judgment fires unpredictably, and an operator can't audit why."</p></blockquote>
+    </section>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="opening-book">
+      <h2 id="opening-book">Opening book<a class="anchor" href="#opening-book" aria-label="Link to this section">#</a></h2>
+      <p>The library of plans that worked before (the opening book) stores sequences of kinds of work (capability classes), not skill names. A learned plan survives installing, renaming, or removing skills. <code>ops-plan</code> reads it; <code>ops-learn</code> maintains it.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Rule</th><th scope="col">Applied by</th><th scope="col">Value</th></tr></thead>
+          <tbody>
+            <tr><td>Match scoring</td><td><code>ops-plan</code></td><td>A trigger phrase appears in the problem: the stored confidence. The problem plainly describes the same workflow: stored confidence + 0.1. No match: 0. A match the problem's task type contradicts counts as no match.</td></tr>
+            <tr><td>Routing: direct reuse</td><td><code>ops-plan</code></td><td>Above 0.85. Offered to you first; reuse skips the full structured situation check (METT-TC).</td></tr>
+            <tr><td>Routing: adaptive reuse</td><td><code>ops-plan</code></td><td>0.5–0.85. The stored plan is scaffolding for a new candidate plan (a COA), with light stress-testing (wargaming).</td></tr>
+            <tr><td>Routing: full analysis</td><td><code>ops-plan</code></td><td>Below 0.5. Treated as no match.</td></tr>
+            <tr><td>Promotion</td><td><code>ops-learn</code></td><td>3 or more <code>high</code> entries with the same ordered class sequence. A new plan starts at confidence 0.75.</td></tr>
+            <tr><td>Reinforcement</td><td><code>ops-learn</code></td><td>A known sequence gains 0.02 per new session, capped at 0.95.</td></tr>
+            <tr><td>Failure capture</td><td><code>ops-learn</code></td><td>2 or more <code>low</code> entries. Recorded as a known-bad sequence (a failure pattern) at confidence 0.60, meaning how sure it is the approach fails.</td></tr>
+            <tr><td>Decay</td><td><code>ops-learn</code></td><td>Last used more than 30 days ago: minus 0.05, floor 0.30. Plans never used (<code>last-used: null</code>) are exempt.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The routing rows are how sure it is an old plan still fits, and how much re-checking that earns (confidence routing). The decay row means an old plan gets checked harder the longer it has sat unused (confidence decay). At <code>immediate</code> urgency, <code>ops-plan</code> uses a matched chain at any confidence.</p>
+      <p>Grouping for promotion uses the ordered list of <code>class</code> values only. Tiers are not part of the key. <code>medium</code> entries never promote or fail; they keep accumulating.</p>
+      <p>Entry schema:</p>
+      <pre><code class="language-yaml">pattern-id: "string"           # kebab-case identifier
+triggers:                       # natural language phrases that activate this pattern
+  - "compare these options"
+capability-chain:               # structural pattern — classes, not skill names
+  - class: intelligence-gathering
+    tier: II-III
+    parallel: true              # can run concurrently with next step
+  - class: synthesis-analysis
+    tier: II
+    depends-on: previous
+reference-example:              # one concrete worked example (educational, not prescriptive)
+  skills-used: []               # the skill names from the run that produced the entry
+  date: null
+confidence: 0.75                # 0-1 scale
+sessions: 0                     # execution count
+last-used: null                 # date of last use</code></pre>
+    </section>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="capability-classes">
+      <h2 id="capability-classes">Capability classes<a class="anchor" href="#capability-classes" aria-label="Link to this section">#</a></h2>
+      <p>Each class names what kind of work a step is doing (its capability-class). A skill declares it in <code>metadata.capability-class</code>; otherwise <code>ops-recon</code> infers it from the description or leaves the skill unclassified.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Class</th><th scope="col">Kind of work</th></tr></thead>
+          <tbody>
+            <tr><td><code>intelligence-gathering</code></td><td>Scanning, researching, monitoring, detecting signals</td></tr>
+            <tr><td><code>synthesis-analysis</code></td><td>Turning gathered material into a structured assessment</td></tr>
+            <tr><td><code>content-production</code></td><td>Writing, drafting, generating content</td></tr>
+            <tr><td><code>content-review</code></td><td>Reviewing, auditing, critiquing, scoring someone's output</td></tr>
+            <tr><td><code>planning-design</code></td><td>Plans, roadmaps, specs, architectures</td></tr>
+            <tr><td><code>execution-orchestration</code></td><td>Multi-step workflows and agent coordination</td></tr>
+            <tr><td><code>release-operations</code></td><td>Shipping, deploying, announcing, post-release monitoring</td></tr>
+            <tr><td><code>retrospective-learning</code></td><td>Retros, debriefs, lessons learned</td></tr>
+            <tr><td><code>personal-tracking</code></td><td>Logging and tracking an individual's own records</td></tr>
+            <tr><td><code>market-intelligence</code></td><td>Competitive intelligence and positioning</td></tr>
+            <tr><td><code>financial-legal</code></td><td>Tax, finance, compliance, contracts</td></tr>
+            <tr><td><code>ideation-invention</code></td><td>Generating novel ideas, exploring concepts</td></tr>
+            <tr><td><code>publication-submission</code></td><td>Manuscripts, pitches, queries, submissions to outlets</td></tr>
+            <tr><td><code>meta-orchestration</code></td><td>Assessing, planning, and dispatching other skills</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><code>meta-orchestration</code> is the class every <code>ops-</code> skill declares. <code>ops-plan</code> never schedules it.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="tiers">
+      <h2 id="tiers">Tiers<a class="anchor" href="#tiers" aria-label="Link to this section">#</a></h2>
+      <p>Each tier says how heavy a lift a step is (tier I = full multi-agent effort … tier V = a quick check). A skill declares it in <code>metadata.tier</code>; otherwise <code>ops-recon</code> infers it, defaulting to III when signals conflict.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Tier</th><th scope="col">Scale</th><th scope="col">Characteristics</th></tr></thead>
+          <tbody>
+            <tr><td><span class="label">Tier I</span></td><td>Full ops</td><td>Multi-phase, launches 2+ subagents, strongest model, large context, multiple artifacts</td></tr>
+            <tr><td><span class="label">Tier II</span></td><td>Substantial</td><td>Structured workflow, 0–1 subagents, strong model, medium context</td></tr>
+            <tr><td><span class="label">Tier III</span></td><td>Standard</td><td>Single-phase, no subagents, one structured output</td></tr>
+            <tr><td><span class="label">Tier IV</span></td><td>Lightweight</td><td>Fast, minimal tooling, read-heavy, feeds higher-tier skills</td></tr>
+            <tr><td><span class="label">Tier V</span></td><td>Atomic</td><td>Single-purpose check/log/status, frequent invocation</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section aria-labelledby="glossary">
+      <h2 id="glossary">Glossary<a class="anchor" href="#glossary" aria-label="Link to this section">#</a></h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Term</th><th scope="col">Plain meaning</th></tr></thead>
+          <tbody>
+            <tr><td>METT-TC</td><td>A structured situation check</td></tr>
+            <tr><td>COA</td><td>A candidate plan</td></tr>
+            <tr><td>OPORD</td><td>The full written plan the run executes</td></tr>
+            <tr><td>Commander's Intent</td><td>The one sentence that has to survive even if the plan changes</td></tr>
+            <tr><td>key terrain</td><td>The one resource whose absence would block the most</td></tr>
+            <tr><td>wargaming</td><td>Stress-testing the plan before running it</td></tr>
+            <tr><td>quiescence check</td><td>Checking every output has somewhere to go</td></tr>
+            <tr><td>volatile (end state)</td><td>An output nothing downstream reads</td></tr>
+            <tr><td>pre-mortem</td><td>Assuming the plan failed and working out why</td></tr>
+            <tr><td>N-1 contingency</td><td>The backup skill to use if the first one fails</td></tr>
+            <tr><td>auto-adapt rule</td><td>A fix it applies on its own without asking</td></tr>
+            <tr><td>escalate trigger</td><td>A condition that stops and asks you instead of guessing</td></tr>
+            <tr><td>HITL checkpoint</td><td>A point where the run stops for your decision</td></tr>
+            <tr><td>opening book</td><td>The library of plans that worked before</td></tr>
+            <tr><td>confidence routing</td><td>How sure it is an old plan still fits, and how much re-checking that earns</td></tr>
+            <tr><td>confidence decay</td><td>An old plan gets checked harder the longer it's sat unused</td></tr>
+            <tr><td>pattern queue</td><td>Candidate new entries for the opening book, waiting on review</td></tr>
+            <tr><td>tier (I–V)</td><td>How heavy a lift this step is (tier I = full multi-agent effort … tier V = a quick check)</td></tr>
+            <tr><td>capability-class</td><td>What kind of work this step is doing</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Other terms used on this page:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Term</th><th scope="col">Plain meaning</th></tr></thead>
+          <tbody>
+            <tr><td>force roster</td><td>An inventory of installed skills, sorted by capability class and tier</td></tr>
+            <tr><td>OODA</td><td>The observe–orient–decide–act loop, run on each step's output</td></tr>
+            <tr><td>N-2 fallback</td><td>What happens when the backup skill also fails: the run stops for your decision</td></tr>
+            <tr><td>anti-fixation check</td><td>A check at each phase boundary on whether the plan's frame still holds</td></tr>
+            <tr><td>failure pattern</td><td>A known-bad sequence, recorded so <code>ops-plan</code> can flag it</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="muted">To contribute or add a suite, see the <a href="https://github.com/shinytoyrobots/skill-suites/blob/main/docs/adding-a-suite.md">rules for adding a suite</a>. How this public suite differs from its private original is recorded in <a href="https://github.com/shinytoyrobots/skill-suites/blob/main/skills/ops/_shared/DERIVATION.md">DERIVATION.md</a>.</p>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p>Apache-2.0 · <a href="https://github.com/shinytoyrobots/skill-suites">Source on GitHub</a></p>
+  </div>
+</footer>
+</body>
+</html>

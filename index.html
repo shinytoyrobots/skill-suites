@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skill-suites</title>
+<meta name="description" content="Agent Skills suites: groups of skills that work together, each installable on its own.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="./">skill-suites</a>
+    <nav aria-label="Site">
+      <ul>
+        <li><a href="#suites">Suites</a></li>
+        <li><a href="https://github.com/shinytoyrobots/skill-suites">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="page">
+  <h1>skill-suites</h1>
+  <p class="lede">Agent Skills suites are groups of skills that work together, and each skill installs on its own. Every skill is a self-contained directory in the <a href="https://agentskills.io">Agent Skills</a> format. An installed skill never reads outside its own directory.</p>
+
+  <h2 id="suites">Suites<a class="anchor" href="#suites" aria-label="Link to this section">#</a></h2>
+  <!-- To add a suite: add one <li> to this list, following the ops- entry. Nothing else on this page changes. -->
+  <ul class="suite-list">
+    <li>
+      <a class="suite-name" href="ops/"><code>ops-</code></a>
+      <p>Plans, orders, runs, and learns from multi-skill efforts across your installed skills.</p>
+      <span class="label">6 skills</span>
+    </li>
+  </ul>
+
+  <h2 id="install">Install<a class="anchor" href="#install" aria-label="Link to this section">#</a></h2>
+  <p>List the skills available in the repository:</p>
+  <pre><code class="language-sh">npx skills add shinytoyrobots/skill-suites --list</code></pre>
+  <p>Install one skill by name. Repeat <code>--skill</code> to install several at once:</p>
+  <pre><code class="language-sh">npx skills add shinytoyrobots/skill-suites --skill &lt;name&gt;</code></pre>
+  <p>Each suite page lists the full install command for that suite.</p>
+
+  <h2 id="source">Source and license<a class="anchor" href="#source" aria-label="Link to this section">#</a></h2>
+  <ul>
+    <li><a href="https://github.com/shinytoyrobots/skill-suites">Repository on GitHub</a></li>
+    <li><a href="https://github.com/shinytoyrobots/skill-suites/blob/main/LICENSE">License (Apache-2.0)</a></li>
+  </ul>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p>Apache-2.0 · <a href="https://github.com/shinytoyrobots/skill-suites">Source on GitHub</a></p>
+  </div>
+</footer>
+</body>
+</html>

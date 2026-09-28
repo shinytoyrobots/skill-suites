@@ -1,0 +1,30 @@
+{
+  "name": "skill-suites",
+  "description": "Agent Skills suites: groups of skills that work together, one plugin per suite.",
+  "owner": {
+    "name": "Robin Cannon",
+    "url": "https://github.com/shinytoyrobots"
+  },
+  "plugins": [
+    {
+      "name": "skill-suites-ops",
+      "description": "Plans, orders, runs, and learns from multi-skill efforts across your installed skills.",
+      "version": "1.0.0",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./skills/ops"
+      },
+      "homepage": "https://github.com/shinytoyrobots/skill-suites",
+      "keywords": [
+        "skill-suites",
+        "ops-plan",
+        "ops-recon",
+        "ops-order",
+        "ops-run",
+        "ops-assess",
+        "ops-learn"
+      ]
+    }
+  ]
+}

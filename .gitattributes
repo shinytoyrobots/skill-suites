@@ -1,0 +1,4 @@
+# Written by scripts/render-plugins.sh from skills/*/suite.yaml. Do not edit.
+.claude-plugin/marketplace.json linguist-generated=true
+.grok-plugin/marketplace.json linguist-generated=true
+skills/*/.claude-plugin/plugin.json linguist-generated=true

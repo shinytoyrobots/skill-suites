@@ -1,46 +1,58 @@
 # skill-suites
 
-Agent Skills suites: groups of skills that work together, each installable on its own. Every skill is a self-contained directory that follows the [Agent Skills](https://agentskills.io) format.
+Agent Skills suites are groups of skills that work together, and each skill installs on its own. Every skill is a self-contained directory in the [Agent Skills](https://agentskills.io) format.
 
 ## ops — orchestrating your other skills
 
-A large skill library has no command layer: nothing that picks which skills fit a problem, sequences them, handles a step that fails, and remembers which sequences worked. The `ops-` suite adapts military planning doctrine to that job. Recon inventories what's installed; plan runs a structured situation check (METT-TC) and recommends a skill sequence; order writes it up as a five-paragraph operations order (OPORD) with backup skills and pre-committed adaptation rules; run executes it phase by phase, stopping at your checkpoints; assess monitors a plan you run by hand; learn promotes sequences that keep succeeding into an opening book that plan checks first. The book stores kinds of work, not skill names, so what it learns survives changes to your library.
+A large skill library has no command layer. Nothing picks which skills fit a problem or puts them in order. Nothing handles a step that fails. Nothing remembers which sequences worked. The `ops-` suite does that job with methods adapted from military planning.
+
+The suite has six skills, one per stage. `ops-recon` takes stock of what you have installed. `ops-plan` runs a structured situation check (METT-TC) and recommends a skill sequence. `ops-order` writes that sequence up as the full written plan the run executes (the OPORD). That plan names backup skills and sets its adaptation rules before the run starts. `ops-run` carries out the plan phase by phase and stops where you need to decide. `ops-assess` monitors a plan you run by hand instead. `ops-learn` saves sequences that keep succeeding into the library of plans that worked before (the opening book), which `ops-plan` checks first. That library stores kinds of work, not skill names, so what it learns survives changes to your skill library.
+
+### Why military planning
+
+The underlying problem is old: given a situation and the resources on hand, produce a plan and run it. Military staffs, incident command, and similar fields have already solved it. The suite borrows its structure from US Army planning doctrine, the Military Decision-Making Process (MDMP). It borrows the observe–orient–decide–act loop (OODA) for adjusting mid-run.
+
+Four ideas come from other fields. A step requests a kind of work, not a named skill, the way the Incident Command System requests typed resources. Each critical step has the backup skill to use if the first one fails (an N-1 contingency), a practice from electric-grid reliability. Adaptation rules come in two classes. Some are fixes applied without asking (auto-adapt rules), like a power grid's automatic generation control. Others are conditions that stop and ask you instead of guessing (escalate triggers), like the anesthesia crisis rule to call for help early. The library of plans that worked before (the opening book) grows only from repeated success, as a chess opening book does.
+
+Discovery, analysis, planning, execution, and review are separate phases, so they are separate skills. The doctrine supplies structure and discipline, not capability. A plan is only as good as the skills you have installed.
 
 | Skill | Does |
 |---|---|
-| `ops-recon` | Inventories installed skills into a force roster by kind of work and weight |
-| `ops-plan` | Recommends which skills to run, in what order, for a problem |
-| `ops-order` | Turns the recommendation into an executable OPORD |
-| `ops-run` | Executes the OPORD with subagents, checkpoints, and resumable state |
-| `ops-assess` | Monitors a hand-run OPORD and writes the execution report |
-| `ops-learn` | Promotes recurring successful sequences into the opening book |
+| `ops-recon` | Builds an inventory of installed skills (the force roster), sorted by kind of work (capability class) and weight (tier) |
+| `ops-plan` | Runs a structured situation check (METT-TC) and recommends which skills to run, in what order |
+| `ops-order` | Turns the recommendation into the full written plan the run executes (the OPORD): a five-paragraph operations order with backup skills and pre-committed adaptation rules |
+| `ops-run` | Executes the full written plan (the OPORD) phase by phase with subagents, stops at checkpoints for your decision, and keeps resumable state |
+| `ops-assess` | Monitors a full written plan (an OPORD) that you run by hand, and writes the execution report |
+| `ops-learn` | Promotes recurring successful sequences into the library of plans that worked before (the opening book), records sequences known to fail, and checks old plans harder the longer they sit unused |
 
 ### Install
 
 ```sh
-npx skills add <owner>/skill-suites --skill ops-recon --skill ops-plan --skill ops-order \
+npx skills add shinytoyrobots/skill-suites --skill ops-recon --skill ops-plan --skill ops-order \
   --skill ops-run --skill ops-assess --skill ops-learn
 ```
 
-Or `--list` to see what's available, and install any subset. `ops-plan` alone is useful; the others follow its output.
+Run with `--list` to see what's available, then install any subset. `ops-plan` alone is useful; the others follow its output.
 
 ### Where things are written
 
-- `./.ops/{YYYY-MM-DD}-{topic}/` in your project — one directory per effort: roster, assessment, recommended plan, OPORD, execution state, report. Add `.ops/` to `.gitignore` if you don't want efforts committed.
-- `~/.ops-skills/` — the opening book and pattern queue, shared across projects. Set `OPS_STATE` to use another directory.
+- `./.ops/{YYYY-MM-DD}-{topic-slug}/` in your project holds one directory per effort. It contains the skill inventory (force roster), the situation assessment, the recommended plan, the full written plan (OPORD), execution state, and the report. Add `.ops/` to `.gitignore` if you don't want efforts committed.
+- `~/.ops-skills/` holds the library of plans that worked before (the opening book). It also holds candidate new entries for that library, waiting on review (the pattern queue). Both are shared across projects. Set `OPS_STATE` to use another directory.
 
-`ops-run` needs a host that can launch subagents and pause for your decision. Everything else runs anywhere Agent Skills load.
+`ops-run` needs a host that can launch subagents and pause for your decision. Without both, use `ops-assess` to monitor a plan you run by hand. Everything else runs anywhere Agent Skills load.
+
+This public port differs from its private original. The differences are recorded in [how the public ops suite was derived](skills/ops/_shared/DERIVATION.md).
 
 ## Repository layout
 
-```
+```text
 skills/<suite>/<skill>/SKILL.md     one skill per directory
 skills/<suite>/_shared/             suite doctrine, edited here, vendored into each skill
 scripts/vendor-references.sh        copies _shared files into the skills that link them
 docs/adding-a-suite.md              rules for the next suite
 ```
 
-An installed skill never reads outside its own directory; `_shared` has no `SKILL.md` and is not installable.
+An installed skill never reads outside its own directory; `_shared` has no `SKILL.md` and is not installable. To add a suite, follow the [rules for adding a suite](docs/adding-a-suite.md).
 
 ## License
 

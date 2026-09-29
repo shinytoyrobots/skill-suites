@@ -6,7 +6,7 @@ Agent Skills suites are groups of skills that work together, and each skill inst
 
 | Suite | Does | Plugin |
 |---|---|---|
-| [`ops-`](skills/ops/README.md) | Plans, orders, runs, and learns from multi-skill efforts across your installed skills. Six skills. | `skill-suites-ops` |
+| [`ops-`](skills/ops/README.md) | Turns a pile of installed skills into a plan that picks which to run and in what order, runs them with backups and check-ins, and remembers which sequences worked. Six skills. | `skill-suites-ops` |
 
 Each suite's README covers what it does, what it writes, and what it needs from the host.
 

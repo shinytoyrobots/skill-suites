@@ -11,8 +11,8 @@
     {
       "name": "skill-suites-ops",
       "source": "./skills/ops",
-      "description": "Plans, orders, runs, and learns from multi-skill efforts across your installed skills.",
-      "version": "1.0.0",
+      "description": "Turns a pile of installed skills into a plan that picks which to run and in what order, runs them with backups and check-ins, and remembers which sequences worked.",
+      "version": "1.0.1",
       "author": {
         "name": "Robin Cannon",
         "url": "https://github.com/shinytoyrobots"

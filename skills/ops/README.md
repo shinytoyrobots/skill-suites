@@ -1,3 +1,5 @@
+<img src="assets/icon.png" alt="" width="128" align="right">
+
 # ops — orchestrating your other skills
 
 A large skill library has no command layer. Nothing picks which skills fit a problem or puts them in order. Nothing handles a step that fails. Nothing remembers which sequences worked. The `ops-` suite does that job with methods adapted from military planning.

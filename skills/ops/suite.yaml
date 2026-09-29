@@ -4,8 +4,8 @@
 # behavior changes.
 name: skill-suites-ops
 displayName: ops
-version: 1.0.0
-description: Plans, orders, runs, and learns from multi-skill efforts across your installed skills.
+version: 1.0.1
+description: Turns a pile of installed skills into a plan that picks which to run and in what order, runs them with backups and check-ins, and remembers which sequences worked.
 keywords:
   - skill-suites
   - ops-plan
@@ -21,3 +21,5 @@ author:
 homepage: https://github.com/shinytoyrobots/skill-suites
 repository: https://github.com/shinytoyrobots/skill-suites
 license: Apache-2.0
+# Optional: a square PNG inside the suite, shown by Claude Code and Grok. Keep it small.
+icon: ./assets/icon.png

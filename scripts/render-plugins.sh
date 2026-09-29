@@ -82,6 +82,13 @@ def parse_suite(path):
         sys.exit(f"{path}: missing {', '.join(missing)}")
     if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", data["name"]):
         sys.exit(f"{path}: name must be kebab-case")
+    icon = data.get("icon")
+    if icon:
+        target = os.path.normpath(os.path.join(os.path.dirname(path), icon))
+        if not icon.startswith("./") or not target.startswith(os.path.dirname(path) + os.sep):
+            sys.exit(f"{path}: icon must be a ./ path inside the suite")
+        if not os.path.isfile(target):
+            sys.exit(f"{path}: icon {icon} does not exist")
     return data
 
 
@@ -102,7 +109,7 @@ if not suites:
 
 
 def manifest(s):
-    return {
+    m = {
         "name": s["name"],
         "displayName": s["displayName"],
         "version": s["version"],
@@ -113,6 +120,10 @@ def manifest(s):
         "license": s["license"],
         "keywords": s["keywords"],
     }
+    # Optional. The plugin manifest carries it; neither marketplace has a field for it.
+    if s.get("icon"):
+        m["icon"] = s["icon"]
+    return m
 
 
 owner = {"name": suites[0][1]["author"]["name"], "url": suites[0][1]["author"]["url"]}

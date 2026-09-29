@@ -10,6 +10,7 @@ Each suite is one plugin folder. Claude and Grok both look for a plugin's skills
 skills/<prefix>/
   suite.yaml                          plugin metadata, edited by hand
   README.md                           the plugin listing text
+  assets/icon.png                     optional plugin icon
   .claude-plugin/plugin.json          generated
   _shared/                            doctrine, voice, templates
   skills/<prefix>-<action>/SKILL.md   one directory per skill
@@ -31,6 +32,7 @@ skills/<prefix>/
 - Copy `skills/ops/suite.yaml` and change every field. `name` is `skill-suites-<prefix>`; a bare prefix such as `ops` is generic enough that the directory holds it for a reviewer.
 - `keywords` are brand-scoped only: `skill-suites` plus the suite's skill names. Grok uses them to suggest the plugin, and a generic word gets the entry sent back.
 - `description` is one sentence saying what the suite does for the person.
+- `icon` is optional: a `./` path to a square PNG inside the suite, conventionally `assets/icon.png`, kept under 256 KB. The render script writes it into `plugin.json`, which both Claude and Grok read. Neither marketplace file has an icon field. The suite-level `assets/` holds no `SKILL.md`, so it is never installed as a skill.
 - Bump `version` whenever the suite's behavior changes. The directory asks for a new version on each release.
 - After vendoring, run `scripts/render-plugins.sh`. It writes the suite's `plugin.json` and adds the suite to both marketplace files. Never edit those files by hand.
 

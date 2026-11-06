@@ -7,6 +7,24 @@
   },
   "plugins": [
     {
+      "name": "skill-suites-dr",
+      "description": "Runs deep research with working memory on disk, either exploring a topic for leads or building a challenged, claim-checked report, then audits or refreshes past runs.",
+      "version": "1.0.0",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./skills/dr"
+      },
+      "homepage": "https://github.com/shinytoyrobots/skill-suites",
+      "keywords": [
+        "skill-suites",
+        "dr-explore",
+        "dr-rigor",
+        "dr-verify",
+        "dr-update"
+      ]
+    },
+    {
       "name": "skill-suites-ops",
       "description": "Turns a pile of installed skills into a plan that picks which to run and in what order, runs them with backups and check-ins, and remembers which sequences worked.",
       "version": "1.0.1",

@@ -1,0 +1,20 @@
+{
+  "name": "skill-suites-dr",
+  "displayName": "dr",
+  "version": "1.0.0",
+  "description": "Runs deep research with working memory on disk, either exploring a topic for leads or building a challenged, claim-checked report, then audits or refreshes past runs.",
+  "author": {
+    "name": "Robin Cannon",
+    "url": "https://github.com/shinytoyrobots"
+  },
+  "homepage": "https://github.com/shinytoyrobots/skill-suites",
+  "repository": "https://github.com/shinytoyrobots/skill-suites",
+  "license": "Apache-2.0",
+  "keywords": [
+    "skill-suites",
+    "dr-explore",
+    "dr-rigor",
+    "dr-verify",
+    "dr-update"
+  ]
+}

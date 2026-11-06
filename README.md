@@ -7,6 +7,7 @@ Agent Skills suites are groups of skills that work together, and each skill inst
 | Suite | Does | Plugin |
 |---|---|---|
 | [`ops-`](skills/ops/README.md) | Turns a pile of installed skills into a plan that picks which to run and in what order, runs them with backups and check-ins, and remembers which sequences worked. Six skills. | `skill-suites-ops` |
+| [`dr-`](skills/dr/README.md) | Runs deep research with working memory on disk: explores a topic for leads, or builds a challenged report whose claims an independent verifier checks against retained sources. Audits and refreshes past runs. Four skills. | `skill-suites-dr` |
 
 Each suite's README covers what it does, what it writes, and what it needs from the host.
 
@@ -25,8 +26,10 @@ Or install a whole suite as a plugin. Each suite is its own plugin, named `skill
 ```sh
 claude plugin marketplace add shinytoyrobots/skill-suites
 claude plugin install skill-suites-ops@skill-suites
+claude plugin install skill-suites-dr@skill-suites
 
 grok plugin install shinytoyrobots/skill-suites#skills/ops
+grok plugin install shinytoyrobots/skill-suites#skills/dr
 ```
 
 ## Repository layout

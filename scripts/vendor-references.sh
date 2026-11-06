@@ -2,7 +2,7 @@
 # Copy each suite's _shared files into the skills that link to them.
 #
 # Skills live at skills/<suite>/skills/<skill>/SKILL.md. A skill links a
-# shared file as references/<name> or assets/<name> in its SKILL.md. For every
+# shared file as references/<name>, assets/<name> or scripts/<name> in its SKILL.md. For every
 # such link whose <name> exists in skills/<suite>/_shared/, this script copies
 # the file into the skill directory. Vendored files a skill no longer links
 # are removed. Files that exist only in a skill's own references/ or assets/
@@ -22,7 +22,7 @@ for shared in "$root"/skills/*/_shared; do
   for skill_md in "$suite_dir"/skills/*/SKILL.md; do
     skill_dir="$(dirname "$skill_md")"
     skill="$(basename "$skill_dir")"
-    linked="$(grep -oE '\]\((references|assets)/[^)#[:space:]]+' "$skill_md" | sed 's/^](//' | sort -u || true)"
+    linked="$(grep -oE '\]\((references|assets|scripts)/[^)#[:space:]]+' "$skill_md" | sed 's/^](//' | sort -u || true)"
 
     for rel in $linked; do
       name="$(basename "$rel")"
@@ -39,7 +39,7 @@ for shared in "$root"/skills/*/_shared; do
     done
 
     # Prune vendored copies that the skill no longer links.
-    for sub in references assets; do
+    for sub in references assets scripts; do
       [ -d "$skill_dir/$sub" ] || continue
       for f in "$skill_dir/$sub"/*; do
         [ -f "$f" ] || continue

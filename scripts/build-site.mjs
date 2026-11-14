@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, rmSync, mkdirSync
 import { join, dirname, resolve, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'node:http';
+import { createHash } from 'node:crypto';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SKILLS = join(ROOT, 'skills');
@@ -20,6 +21,8 @@ if (!BASE.startsWith('/')) BASE = '/' + BASE;
 if (!BASE.endsWith('/')) BASE += '/';
 const url = (p = '') => BASE + p.replace(/^\/+/, '');
 
+// Cache-bust the stylesheet: an older site at the same URL may still be in browser caches.
+const CSS_V = createHash('sha256').update(readFileSync(join(SRC, 'assets', 'site.css'))).digest('hex').slice(0, 10);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 // ---- minimal front matter / yaml (top-level scalars, one nested `metadata:` map) ----
@@ -121,7 +124,7 @@ function page({ title, desc, current, body }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${FONTS}">
-<link rel="stylesheet" href="${url('assets/site.css')}">
+<link rel="stylesheet" href="${url('assets/site.css')}?v=${CSS_V}">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>

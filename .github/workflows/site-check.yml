@@ -1,0 +1,17 @@
+name: site-check
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build and check links (project Pages base)
+        run: SITE_BASE=/skill-suites/ node scripts/build-site.mjs --check
+      - name: Build and check links (root base)
+        run: SITE_BASE=/ node scripts/build-site.mjs --check

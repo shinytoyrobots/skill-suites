@@ -2,6 +2,8 @@
 
 Agent Skills suites are groups of skills that work together, and each skill installs on its own. Every skill is a self-contained directory in the [Agent Skills](https://agentskills.io) format.
 
+Site: <https://shinytoyrobots.github.io/skill-suites/> lists every skill with where it came from.
+
 ## Suites
 
 | Suite | Does | Plugin |

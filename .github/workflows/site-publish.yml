@@ -1,0 +1,37 @@
+name: site-publish
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency: site-publish
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build and check links
+        run: SITE_BASE=/skill-suites/ node scripts/build-site.mjs --check
+      - name: Publish dist/ to gh-pages (one commit, regular push)
+        env:
+          DEPLOY_KEY: ${{ secrets.GH_PAGES_DEPLOY_KEY }}
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+          export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes"
+          git clone -q --depth 1 --branch gh-pages "git@github.com:${GITHUB_REPOSITORY}.git" "$RUNNER_TEMP/pages"
+          cd "$RUNNER_TEMP/pages"
+          # Replace the whole tree with dist/ so removed skills disappear; no force push.
+          git rm -rq --ignore-unmatch .
+          cp -a "$GITHUB_WORKSPACE/dist/." .
+          git add -A
+          if git diff --cached --quiet; then echo "No site changes."; exit 0; fi
+          git -c user.name="Robin Cannon" -c user.email="robin@shinytoyrobots.com" \
+            commit -q -m "Publish site from ${GITHUB_SHA}"
+          git push origin gh-pages

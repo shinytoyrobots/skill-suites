@@ -36,6 +36,10 @@ skills/<prefix>/
 - Bump `version` whenever the suite's behavior changes. The directory asks for a new version on each release.
 - After vendoring, run `scripts/render-plugins.sh`. It writes the suite's `plugin.json` and adds the suite to both marketplace files. Never edit those files by hand.
 
+## Site page
+
+The site reads the skills from the repo, so a new suite needs no template edits. Add one `site-src/content/<skill>.md` per skill: front matter with a one-sentence `tagline`, then `## What it does` and `## Where it came from`. The PR build (`node scripts/build-site.mjs --check`) fails on a missing or orphaned content file, a leftover `[VERIFY]` marker, or a frontmatter mismatch.
+
 ## Suite README
 
 `skills/<prefix>/README.md` is the text the Claude directory lists. At least 40 words. It says what the suite does, every place it writes (project-relative and home-relative, with the override variable), and whether it makes network calls. The root README gets one row in its suite table linking here.

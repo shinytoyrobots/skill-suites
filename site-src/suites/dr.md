@@ -3,5 +3,3 @@
 The dr suite is a deep research skill that was split into four. It keeps the original five phases: brief, scan, deep dive, challenge and expansion, then synthesis and verification. The tier budgets and search allowances, the claim-ID and provenance rules, and the verifier's ledger statuses carry over from that original.
 
 Several methods are named in the skills themselves. The lateral-thinking scout makes two or three leaps from the topic, each generated with Koestler's bisociation, de Bono's provocation, Munger's inversion, or a cross-domain analogy, and writes down a test for each leap before investigating. The challenge phase red-teams the emerging conclusions with that same method, and every thread agent also runs a disconfirming search. The decision-brief output form scores options with Heuer's Analysis of Competing Hypotheses. The verifier is deliberately independent of the writer. dr-update and dr-verify reuse dr-rigor's budget, plan and verification rules, so a refreshed or audited report is held to the same claim check as a new one.
-
-The suite was ported from a private skill library and has been edited in this repository since.

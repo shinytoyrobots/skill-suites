@@ -124,7 +124,7 @@ if (errors.length) {
 // ---- templates ----
 const FONTS = 'https://fonts.googleapis.com/css2?family=Golos+Text:wght@400&family=Roboto+Mono:wght@500;700&display=swap';
 function page({ title, desc, current, body }) {
-  const nav = [['Home', url(), 'home'], ['Skills', url('#skills'), 'skills'], ['GitHub', GH, 'gh']]
+  const nav = [['Home', url(), 'home'], ['Install', url('#install'), 'install'], ['GitHub', GH, 'gh']]
     .map(([t, h, k]) => `<a href="${esc(h)}"${k === current ? ' aria-current="page"' : ''}>${t}</a>`).join('');
   return `<!doctype html>
 <html lang="en-US">
@@ -155,66 +155,26 @@ const installPlugin = (suite) => `claude plugin marketplace add ${REPO}\nclaude 
 const ghBlob = (p) => `${GH}/blob/main/${p}`;
 
 function home() {
-  const groups = suites.map((s) => `
-<section aria-labelledby="suite-${esc(s.id)}">
+  const groups = suites.map((x) => `
+<section aria-labelledby="suite-${esc(x.id)}">
 <p class="overline">Suite</p>
-<h2 id="suite-${esc(s.id)}"><a href="${url(`suites/${s.id}/`)}">${esc(s.meta.displayName || s.id)}</a></h2>
-<p class="suite-desc">${esc(s.meta.description || '')}</p>
+<h2 id="suite-${esc(x.id)}">${esc(x.meta.displayName || x.id)}</h2>
+<p class="lede">${esc(x.meta.description || '')}</p>
+<h3>Where it came from</h3>
+${paragraphs(x.origin)}
+<h3>Skills</h3>
 <ul class="catalogue">
-${s.skills.map((k) => `<li><a class="name" href="${url(`skills/${k.name}/`)}">${esc(k.name)}</a><a class="src" href="${esc(ghBlob(k.path))}">GitHub</a><p class="tag">${esc(k.tagline)}</p></li>`).join('\n')}
+${x.skills.map((k) => `<li id="${esc(k.name)}"><a class="name" href="${esc(ghBlob(k.path))}">${esc(k.name)}</a><p class="tag">${esc(k.tagline)}</p>${paragraphs(k.what)}</li>`).join('\n')}
 </ul>
+<pre><code>${esc(installPlugin(x))}</code></pre>
 </section>`).join('\n');
   const body = `<h1>Skills that work together, and install one at a time</h1>
 <p class="lede">${all.length} Agent Skills in ${suites.length} suites. Each skill is a self-contained directory in the <a href="https://agentskills.io">Agent Skills</a> format.</p>
-<h2 id="skills">Skills</h2>
-${groups}
-<h2 id="install">Install</h2>
-<p>Install any skill on its own with any Agent Skills host:</p>
+<h2 id="install">Install a single skill</h2>
 <pre><code>npx skills add ${REPO} --list
 ${esc(installSkill([all[0].name]))}</code></pre>
-<p>Or install a suite as a plugin:</p>
-<pre><code>${esc(suites.map(installPlugin).join('\n\n'))}</code></pre>`;
+${groups}`;
   return page({ title: 'skill-suites: Agent Skills that work together', desc: `${all.length} Agent Skills in ${suites.length} suites, each installable on its own.`, current: 'home', body });
-}
-
-function suitePage(x) {
-  const name = esc(x.meta.displayName || x.id);
-  const body = `<p class="overline">Suite</p>
-<h1>${name}</h1>
-<p class="lede">${esc(x.meta.description || '')}</p>
-<h2>Where it came from</h2>
-${paragraphs(x.origin)}
-<h2>Skills</h2>
-<ul class="catalogue">
-${x.skills.map((k) => `<li><a class="name" href="${url(`skills/${k.name}/`)}">${esc(k.name)}</a><a class="src" href="${esc(ghBlob(k.path))}">GitHub</a><p class="tag">${esc(k.tagline)}</p></li>`).join('\n')}
-</ul>
-<h2>Install</h2>
-<pre><code>${esc(installPlugin(x))}</code></pre>
-<p><a href="${esc(`${GH}/tree/main/skills/${x.id}`)}">View the ${name} suite on GitHub</a></p>`;
-  return page({ title: `${x.meta.displayName || x.id} suite | skill-suites`, desc: x.meta.description || '', current: null, body });
-}
-
-function skillPage(s, i, siblings) {
-  const prev = siblings[i - 1], next = siblings[i + 1];
-  const suite = suites.find((x) => x.id === s.suite);
-  const body = `<p class="overline"><a href="${url(`suites/${s.suite}/`)}">${esc(suite.meta.displayName || s.suite)} suite</a></p>
-<h1>${esc(s.name)}</h1>
-<p class="lede">${esc(s.tagline)}</p>
-<h2>What it does</h2>
-${paragraphs(s.what)}
-<p>Where it came from: see the <a href="${url(`suites/${s.suite}/`)}">${esc(suite.meta.displayName || s.suite)} suite</a>.</p>
-<h2>Trigger text</h2>
-<p>The description the skill's <code>SKILL.md</code> gives a host, verbatim:</p>
-<blockquote class="trigger"><p>${esc(s.description)}</p></blockquote>
-<h2>Install</h2>
-<pre><code>${esc(installSkill([s.name]))}</code></pre>
-<p>Or get the whole suite: <code>${esc(suite.meta.name || 'skill-suites-' + s.suite)}</code>.</p>
-<p><a href="${esc(ghBlob(s.path))}">View ${esc(s.name)} on GitHub</a></p>
-<nav class="pn" aria-label="Skills in this suite">
-<span>${prev ? `<a href="${url(`skills/${prev.name}/`)}">&larr; ${esc(prev.name)}</a>` : ''}</span>
-<span>${next ? `<a href="${url(`skills/${next.name}/`)}">${esc(next.name)} &rarr;</a>` : ''}</span>
-</nav>`;
-  return page({ title: `${s.name} | skill-suites`, desc: s.tagline, current: null, body });
 }
 
 // ---- write ----
@@ -222,16 +182,7 @@ mkdirSync(DIST, { recursive: true });
 cpSync(join(SRC, 'assets'), join(DIST, 'assets'), { recursive: true });
 writeFileSync(join(DIST, '.nojekyll'), '');
 writeFileSync(join(DIST, 'index.html'), home());
-for (const suite of suites) {
-  mkdirSync(join(DIST, 'suites', suite.id), { recursive: true });
-  writeFileSync(join(DIST, 'suites', suite.id, 'index.html'), suitePage(suite));
-  suite.skills.forEach((s, i, arr) => {
-    const dir = join(DIST, 'skills', s.name);
-    mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, 'index.html'), skillPage(s, i, arr));
-  });
-}
-console.log(`Built ${all.length} skill pages, suite pages and the home page into dist/ (base ${BASE}).`);
+console.log(`Built the single page into dist/ (base ${BASE}).`);
 
 // ---- check: every internal href/src resolves under BASE ----
 function walk(d) { return readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)])); }

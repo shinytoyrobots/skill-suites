@@ -22,7 +22,7 @@ The repository must be public before the listing publishes. Publishing needs a p
 
 The same for every suite here, unless a suite's README says otherwise:
 
-- **What it reads and writes.** Only what the operator asks it to, in the project-relative and home-relative directories its README names (for `ops-`: `./.ops/` and `~/.ops-skills/`, or `OPS_STATE`).
+- **What it reads and writes.** Only what the operator asks it to, in the project-relative and home-relative directories its README names (for `orch-`: `./.orch/` and `~/.orch-skills/`, or `ORCH_STATE`).
 - **Where data goes.** Nowhere. The skills make no network calls and send nothing to another service.
 - **Retention.** Files stay on the operator's machine until the operator deletes them.
 - **Audience.** Not directed at people under 18.

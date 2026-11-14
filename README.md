@@ -6,7 +6,7 @@ Agent Skills suites are groups of skills that work together, and each skill inst
 
 | Suite | Does | Plugin |
 |---|---|---|
-| [`ops-`](skills/ops/README.md) | Turns a pile of installed skills into a plan that picks which to run and in what order, runs them with backups and check-ins, and remembers which sequences worked. Six skills. | `skill-suites-ops` |
+| [`orch-`](skills/orch/README.md) | Plans which of your installed skills to run for a problem, in what order and with what backups, then runs the plan with check-ins where you decide. Two skills (formerly the six-skill `ops-` suite). | `skill-suites-orch` |
 | [`dr-`](skills/dr/README.md) | Runs deep research with working memory on disk: explores a topic for leads, or builds a challenged report whose claims an independent verifier checks against retained sources. Audits and refreshes past runs. Four skills. | `skill-suites-dr` |
 
 Each suite's README covers what it does, what it writes, and what it needs from the host.
@@ -17,18 +17,17 @@ Install any skill on its own, with any Agent Skills host:
 
 ```sh
 npx skills add shinytoyrobots/skill-suites --list
-npx skills add shinytoyrobots/skill-suites --skill ops-recon --skill ops-plan --skill ops-order \
-  --skill ops-run --skill ops-assess --skill ops-learn
+npx skills add shinytoyrobots/skill-suites --skill orch-plan --skill orch-run
 ```
 
 Or install a whole suite as a plugin. Each suite is its own plugin, named `skill-suites-<suite>`:
 
 ```sh
 claude plugin marketplace add shinytoyrobots/skill-suites
-claude plugin install skill-suites-ops@skill-suites
+claude plugin install skill-suites-orch@skill-suites
 claude plugin install skill-suites-dr@skill-suites
 
-grok plugin install shinytoyrobots/skill-suites#skills/ops
+grok plugin install shinytoyrobots/skill-suites#skills/orch
 grok plugin install shinytoyrobots/skill-suites#skills/dr
 ```
 

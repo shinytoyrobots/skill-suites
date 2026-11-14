@@ -100,8 +100,21 @@ for (const s of all) {
   const sec = sections(body);
   if (typeof fm.tagline !== 'string' || !fm.tagline.trim()) errors.push(`${s.name}: missing tagline`);
   if (!sec['What it does']?.trim()) errors.push(`${s.name}: missing "What it does" section`);
-  if (!sec['Where it came from']?.trim()) errors.push(`${s.name}: missing "Where it came from" section`);
-  Object.assign(s, { tagline: fm.tagline, what: sec['What it does'], origin: sec['Where it came from'] });
+  if (sec['Where it came from'] !== undefined) errors.push(`${s.name}: "Where it came from" belongs in site-src/suites/${s.suite}.md, not the skill file`);
+  Object.assign(s, { tagline: fm.tagline, what: sec['What it does'] });
+}
+// Provenance lives at the suite level.
+const suiteContentDir = join(SRC, 'suites');
+const suiteFiles = existsSync(suiteContentDir) ? readdirSync(suiteContentDir).filter((f) => f.endsWith('.md')) : [];
+for (const f of suiteFiles) if (!suites.some((x) => `${x.id}.md` === f)) errors.push(`suites/${f}: orphan, no suite with that name`);
+for (const x of suites) {
+  const f = join(suiteContentDir, `${x.id}.md`);
+  if (!existsSync(f)) { errors.push(`${x.id}: missing site-src/suites/${x.id}.md`); continue; }
+  const raw = readFileSync(f, 'utf8');
+  if (raw.includes('[VERIFY')) errors.push(`${x.id}: suite content has an unresolved [VERIFY] marker`);
+  const origin = sections(splitFrontMatter(raw).body)['Where it came from'];
+  if (!origin?.trim()) errors.push(`${x.id}: suite content missing "Where it came from" section`);
+  x.origin = origin;
 }
 if (errors.length) {
   console.error(`Build failed with ${errors.length} error(s):\n` + errors.map((e) => `  - ${e}`).join('\n'));
@@ -145,7 +158,7 @@ function home() {
   const groups = suites.map((s) => `
 <section aria-labelledby="suite-${esc(s.id)}">
 <p class="overline">Suite</p>
-<h2 id="suite-${esc(s.id)}">${esc(s.meta.displayName || s.id)}</h2>
+<h2 id="suite-${esc(s.id)}"><a href="${url(`suites/${s.id}/`)}">${esc(s.meta.displayName || s.id)}</a></h2>
 <p class="suite-desc">${esc(s.meta.description || '')}</p>
 <ul class="catalogue">
 ${s.skills.map((k) => `<li><a class="name" href="${url(`skills/${k.name}/`)}">${esc(k.name)}</a><a class="src" href="${esc(ghBlob(k.path))}">GitHub</a><p class="tag">${esc(k.tagline)}</p></li>`).join('\n')}
@@ -164,16 +177,32 @@ ${esc(installSkill([all[0].name]))}</code></pre>
   return page({ title: 'skill-suites: Agent Skills that work together', desc: `${all.length} Agent Skills in ${suites.length} suites, each installable on its own.`, current: 'home', body });
 }
 
+function suitePage(x) {
+  const name = esc(x.meta.displayName || x.id);
+  const body = `<p class="overline">Suite</p>
+<h1>${name}</h1>
+<p class="lede">${esc(x.meta.description || '')}</p>
+<h2>Where it came from</h2>
+${paragraphs(x.origin)}
+<h2>Skills</h2>
+<ul class="catalogue">
+${x.skills.map((k) => `<li><a class="name" href="${url(`skills/${k.name}/`)}">${esc(k.name)}</a><a class="src" href="${esc(ghBlob(k.path))}">GitHub</a><p class="tag">${esc(k.tagline)}</p></li>`).join('\n')}
+</ul>
+<h2>Install</h2>
+<pre><code>${esc(installPlugin(x))}</code></pre>
+<p><a href="${esc(`${GH}/tree/main/skills/${x.id}`)}">View the ${name} suite on GitHub</a></p>`;
+  return page({ title: `${x.meta.displayName || x.id} suite | skill-suites`, desc: x.meta.description || '', current: null, body });
+}
+
 function skillPage(s, i, siblings) {
   const prev = siblings[i - 1], next = siblings[i + 1];
   const suite = suites.find((x) => x.id === s.suite);
-  const body = `<p class="overline">${esc(suite.meta.displayName || s.suite)}</p>
+  const body = `<p class="overline"><a href="${url(`suites/${s.suite}/`)}">${esc(suite.meta.displayName || s.suite)} suite</a></p>
 <h1>${esc(s.name)}</h1>
 <p class="lede">${esc(s.tagline)}</p>
 <h2>What it does</h2>
 ${paragraphs(s.what)}
-<h2>Where it came from</h2>
-${paragraphs(s.origin)}
+<p>Where it came from: see the <a href="${url(`suites/${s.suite}/`)}">${esc(suite.meta.displayName || s.suite)} suite</a>.</p>
 <h2>Trigger text</h2>
 <p>The description the skill's <code>SKILL.md</code> gives a host, verbatim:</p>
 <blockquote class="trigger"><p>${esc(s.description)}</p></blockquote>
@@ -194,13 +223,15 @@ cpSync(join(SRC, 'assets'), join(DIST, 'assets'), { recursive: true });
 writeFileSync(join(DIST, '.nojekyll'), '');
 writeFileSync(join(DIST, 'index.html'), home());
 for (const suite of suites) {
+  mkdirSync(join(DIST, 'suites', suite.id), { recursive: true });
+  writeFileSync(join(DIST, 'suites', suite.id, 'index.html'), suitePage(suite));
   suite.skills.forEach((s, i, arr) => {
     const dir = join(DIST, 'skills', s.name);
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, 'index.html'), skillPage(s, i, arr));
   });
 }
-console.log(`Built ${all.length} skill pages and the home page into dist/ (base ${BASE}).`);
+console.log(`Built ${all.length} skill pages, suite pages and the home page into dist/ (base ${BASE}).`);
 
 // ---- check: every internal href/src resolves under BASE ----
 function walk(d) { return readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)])); }

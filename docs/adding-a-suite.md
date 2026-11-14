@@ -38,7 +38,7 @@ skills/<prefix>/
 
 ## Site page
 
-The site reads the skills from the repo, so a new suite needs no template edits. Add one `site-src/content/<skill>.md` per skill: front matter with a one-sentence `tagline`, then `## What it does` and `## Where it came from`. The PR build (`node scripts/build-site.mjs --check`) fails on a missing or orphaned content file, a leftover `[VERIFY]` marker, or a frontmatter mismatch.
+The site reads the skills from the repo, so a new suite needs no template edits. Add `site-src/suites/<prefix>.md` with a `## Where it came from` section (the frameworks and prior art behind the whole suite), and one `site-src/content/<skill>.md` per skill: front matter with a one-sentence `tagline`, then `## What it does`. Provenance is written once per suite, never per skill. The PR build (`node scripts/build-site.mjs --check`) fails on a missing or orphaned file, a `Where it came from` section in a skill file, a leftover `[VERIFY]` marker, or a frontmatter mismatch.
 
 ## Suite README
 

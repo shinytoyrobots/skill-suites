@@ -7,4 +7,4 @@ You give it a question and a short brief. It scans broadly, follows the most pro
 
 ## Where it came from
 
-dr-explore is the exploratory half of a deep research skill that was split in two. It keeps the original phases: brief, scan, deep dive, then challenge and expansion. The lateral-thinking scout is a separate set of instructions that ships inside the skill. It was ported from a private skill library and has been edited in this repository since.
+dr-explore is the exploratory half of a deep research skill that was split in two. It keeps the original phases: brief, scan, deep dive, then challenge and expansion. The lateral-thinking scout makes two or three leaps from the topic, each generated with a named method: Koestler's bisociation, de Bono's provocation, Munger's inversion, or a cross-domain analogy. It writes down a test for each leap before investigating, so weak connections are dropped rather than oversold. Those instructions ship inside the skill. It was ported from a private skill library and has been edited in this repository since.

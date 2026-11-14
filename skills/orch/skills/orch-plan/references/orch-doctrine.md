@@ -178,7 +178,7 @@ Step outputs written by the orchestrated skills go wherever the OPORD's tasking 
 | user | `~/.agents/skills`, `~/.claude/skills`, `~/.grok/skills`, `~/.codex/skills` |
 | command files | `~/.claude/commands/*.md` (top level only) |
 
-Scan with symlinks followed (`find -L`), because installers commonly symlink skill directories into place. A skill is installed when `{root}/{name}/SKILL.md` exists in any root. **A roster is a planning aid, not proof a skill exists:** before any plan or run names a skill, check that its `SKILL.md` is present now, and treat a missing one as an error, not a warning.
+Scan with symlinks followed (`find -L`), because installers commonly symlink skill directories into place. A skill is installed when `{root}/{name}/SKILL.md` exists in a skill root, or, for a command file, when `~/.claude/commands/{name}.md` exists. **A roster is a planning aid, not proof a skill exists:** before any plan or run names a skill, check that its file is present now (the `SKILL.md`, or the command file for a command-file skill), and treat a missing one as an error, not a warning.
 
 **Roster fingerprint.** `{count}:{epoch}` over the roots that exist: the number of files, and the newest modification time among them. Compute the count with `find -L {roots} -type f | wc -l` and the epoch with `find -L {roots} -type f -exec sh -c 'stat -c %Y "$1" 2>/dev/null || stat -f %m "$1"' _ {} \; | sort -n | tail -1` (GNU `stat` first, then BSD, so it works on Linux and macOS). A roster is reused only when it is under 30 minutes old and its stored fingerprint matches a fresh one.
 

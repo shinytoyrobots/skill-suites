@@ -28,11 +28,11 @@ Reuse a roster only under the doctrine's freshness rule (under 30 minutes old an
 
 Exclude the `meta-orchestration` class from Troops so a plan never schedules an `orch-` skill.
 
-**Check every recommendation against the install, not the roster.** Before a skill appears in any plan, confirm its `SKILL.md` exists now (doctrine, "Where installed skills live"). A skill that fails is removed from the plan and reported as an error ("{name} is not installed"), never carried as a warning.
+**Check every recommendation against the install, not the roster.** Before a skill appears in any plan, confirm its `SKILL.md` (or its command file) exists now (doctrine, "Where installed skills live"). A skill that fails is removed from the plan and reported as an error ("{name} is not installed"), never carried as a warning.
 
 ### Early exit
 
-Before the full analysis, check whether the problem needs more than two skills or any ordering decision. If one or two installed skills clearly cover it, say which, in what order, and why nothing more is needed, then stop. Do not run METT-TC, COAs, or wargaming for a problem that does not need them. If `--order` was given, still write the executable order for that short chain (a one- or two-skill order is valid) before stopping.
+Before the full analysis, check whether the problem needs more than two skills or any ordering decision. If one or two installed skills clearly cover it, say which, in what order, and why nothing more is needed, then stop. Do not run METT-TC, COAs, or wargaming for a problem that does not need them. If `--order` was given, first write a minimal `coa-recommended.md` for that short chain (the Commander's Intent, the one-liner, and a one- or two-row execution sequence; no wargaming), then write the executable order from it before stopping.
 
 ## Phase 2: METT-TC Analysis
 

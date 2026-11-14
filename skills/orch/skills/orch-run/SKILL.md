@@ -37,7 +37,7 @@ Build an execution plan from the OPORD: topic, Commander's Intent, phases (each 
 
 Validate before anything runs:
 
-1. **Every skill is installed.** Check each step's skill, and each substitute in the contingencies, by confirming its `SKILL.md` exists now (doctrine, "Where installed skills live"). Skills may have been installed or removed since planning. A missing primary skill with an installed substitute is a warning; with no substitute, it blocks.
+1. **Every skill is installed.** Check each step's skill, and each substitute in the contingencies, by confirming its `SKILL.md` (or its command file) exists now (doctrine, "Where installed skills live"). Skills may have been installed or removed since planning. A missing primary skill with an installed substitute is a warning; with no substitute, it blocks.
 2. No circular dependencies in phase ordering.
 3. Every `depends-on` resolves to an earlier phase or a step in the same phase.
 4. Every checkpoint has criteria.

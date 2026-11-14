@@ -1,6 +1,6 @@
 # Order format
 
-If no `coa-recommended.md` exists in the run directory, run the plan first. Produce this only when the plan is headed for `orch-run`: the operator asked for the executable order (`--order`) or approves a run. A plan that is only read by a person ends at the recommended plan.
+If no `coa-recommended.md` exists in the run directory, the plan has not been written: write it first (for a one- or two-skill chain, the minimal version described in the early exit), then continue. Never loop back to the early exit from here. Produce this only when the plan is headed for `orch-run`: the operator asked for the executable order (`--order`) or approves a run. A plan that is only read by a person ends at the recommended plan.
 
 ## Phase 1: Parse
 

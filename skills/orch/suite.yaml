@@ -1,0 +1,21 @@
+# Plugin metadata for the orch suite. The only hand-edited plugin file:
+# scripts/render-plugins.sh writes .claude-plugin/plugin.json here and both
+# marketplace indexes at the repo root from it. Bump version when the suite's
+# behavior changes.
+name: skill-suites-orch
+displayName: orch
+version: 2.0.0
+description: Plans which of your installed skills to run for a problem, in what order and with what backups, then runs the plan with check-ins where you decide.
+keywords:
+  - skill-suites
+  - orch-plan
+  - orch-run
+category: development
+author:
+  name: Robin Cannon
+  url: https://github.com/shinytoyrobots
+homepage: https://github.com/shinytoyrobots/skill-suites
+repository: https://github.com/shinytoyrobots/skill-suites
+license: Apache-2.0
+# Optional: a square PNG inside the suite, shown by Claude Code and Grok. Keep it small.
+icon: ./assets/icon.png

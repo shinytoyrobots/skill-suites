@@ -29,7 +29,7 @@ skills/<prefix>/
 
 ## Plugin metadata
 
-- Copy `skills/ops/suite.yaml` and change every field. `name` is `skill-suites-<prefix>`; a bare prefix such as `ops` is generic enough that the directory holds it for a reviewer.
+- Copy `skills/orch/suite.yaml` and change every field. `name` is `skill-suites-<prefix>`; a bare prefix such as `orch` is generic enough that the directory holds it for a reviewer.
 - `keywords` are brand-scoped only: `skill-suites` plus the suite's skill names. Grok uses them to suggest the plugin, and a generic word gets the entry sent back.
 - `description` is one sentence saying what the suite does for the person.
 - `icon` is optional: a `./` path to a square PNG inside the suite, conventionally `assets/icon.png`, kept under 256 KB. The render script writes it into `plugin.json`, which both Claude and Grok read. Neither marketplace file has an icon field. The suite-level `assets/` holds no `SKILL.md`, so it is never installed as a skill.
@@ -42,7 +42,7 @@ skills/<prefix>/
 
 ## No machine-specific bindings
 
-- No absolute paths into a particular person's home, notes, or tooling. Run artifacts go in a documented project-relative directory (the `ops-` suite uses `./.ops/`); cross-project state goes in a documented home-relative directory with an environment-variable override (`~/.ops-skills/`, `OPS_STATE`).
+- No absolute paths into a particular person's home, notes, or tooling. Run artifacts go in a documented project-relative directory (the `orch-` suite uses `./.orch/`); cross-project state goes in a documented home-relative directory with an environment-variable override (`~/.orch-skills/`, `ORCH_STATE`).
 - No personal state. Ship empty templates in `assets/` and have the skill create the real file on first use. A seeded file that names someone's own work, projects, or dates doesn't ship.
 - No dependency on skills outside the suite except by discovery at runtime.
 
@@ -60,7 +60,7 @@ When a suite is ported from a private or internal source, `_shared/DERIVATION.md
 
 1. `skills-ref validate` passes on every skill directory.
 2. `npx skills add <this repo> --list` shows every skill and does not show `_shared`.
-3. A repository search finds none of the source's private paths, names, or prefixes. A standard install location that any user of a host has (such as `~/.claude/commands`) is not private, and may appear where a skill scans for installed skills — as in `ops-recon`'s scan-root table. Anywhere else, treat it as a leak: a skill that reads or writes there is binding to one person's setup.
+3. A repository search finds none of the source's private paths, names, or prefixes. A standard install location that any user of a host has (such as `~/.claude/commands`) is not private, and may appear where a skill scans for installed skills — as in the `orch-` doctrine's table of skill roots. Anywhere else, treat it as a leak: a skill that reads or writes there is binding to one person's setup.
 4. After installing one skill alone into an empty project, every link in its `SKILL.md` resolves inside the installed directory.
 5. `scripts/vendor-references.sh` then `scripts/render-plugins.sh`, each run twice, produce no diff, and `scripts/render-plugins.sh --check` exits 0.
 6. The suite README is at least 40 words.

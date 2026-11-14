@@ -30,10 +30,10 @@
       "category": "development"
     },
     {
-      "name": "skill-suites-ops",
-      "source": "./skills/ops",
-      "description": "Turns a pile of installed skills into a plan that picks which to run and in what order, runs them with backups and check-ins, and remembers which sequences worked.",
-      "version": "1.0.1",
+      "name": "skill-suites-orch",
+      "source": "./skills/orch",
+      "description": "Plans which of your installed skills to run for a problem, in what order and with what backups, then runs the plan with check-ins where you decide.",
+      "version": "2.0.0",
       "author": {
         "name": "Robin Cannon",
         "url": "https://github.com/shinytoyrobots"
@@ -43,12 +43,8 @@
       "license": "Apache-2.0",
       "keywords": [
         "skill-suites",
-        "ops-plan",
-        "ops-recon",
-        "ops-order",
-        "ops-run",
-        "ops-assess",
-        "ops-learn"
+        "orch-plan",
+        "orch-run"
       ],
       "category": "development"
     }

@@ -1,0 +1,19 @@
+{
+  "name": "skill-suites-orch",
+  "displayName": "orch",
+  "version": "2.0.0",
+  "description": "Plans which of your installed skills to run for a problem, in what order and with what backups, then runs the plan with check-ins where you decide.",
+  "author": {
+    "name": "Robin Cannon",
+    "url": "https://github.com/shinytoyrobots"
+  },
+  "homepage": "https://github.com/shinytoyrobots/skill-suites",
+  "repository": "https://github.com/shinytoyrobots/skill-suites",
+  "license": "Apache-2.0",
+  "keywords": [
+    "skill-suites",
+    "orch-plan",
+    "orch-run"
+  ],
+  "icon": "./assets/icon.png"
+}
